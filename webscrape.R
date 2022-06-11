@@ -17,3 +17,46 @@ cleanr <- function(xw){
 }
 
 unlist(lapply(wtext[2:length(wtext)], cleanr))
+
+unlist(strsplit(wtext[2], split = "\n\n\n"))->t
+gsub("\n\n",",", t) -> t
+trimws(t) -> t
+gsub("\n",",", t)->t
+
+strsplit(t, split = ",")->splited
+max(unlist(lapply(splited, length)))->maxl
+
+sapply( splited, function(x){
+  a = rep("",maxl)
+  a[1:length(x)]<-unlist(x)
+  a
+})->nameMat
+data.frame(t(nameMat))
+
+##
+extractname <- function(xyz){
+  unlist(strsplit(xyz, split = "\n\n\n"))->t
+  gsub("\n\n",",", t) -> t
+  trimws(t) -> t
+  gsub("\n",",", t)->t
+  
+  strsplit(t, split = ",")->splited
+  max(unlist(lapply(splited, length)))->maxl
+  max(c(maxl,9))
+  
+  sapply( splited, function(x){
+    a = rep("", maxl)
+    a[1:length(x)]<-unlist(x)
+    a
+  })->nameMat
+  data.frame(t(nameMat))[-1,1:5]
+}
+
+lapply(wtext[2:8], extractname)->multiDF
+
+idf <- multiDF[[1]]
+
+for ( i in 2:length(multiDF)) {
+  idf <- rbind(idf, multiDF[[i]])
+}
+idf[nchar(idf[,1])>10,1:3]
