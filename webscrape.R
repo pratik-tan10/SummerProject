@@ -56,5 +56,24 @@ for (i in 1:length(personList)){
 
   }
 }
-data.frame(nameMat, colnames = c("Prime Minister", "Birth-Death"))
+data.frame(nameMat) -> names
+df2clean$Start <- df2clean$Start%>%str_replace(pattern = "\\[.*\\]", "")%>%str_replace(pattern = "(?:c.\\s)", "")
+df2clean$End <- df2clean$End%>%str_replace(pattern = "\\[.*\\]", "")%>%str_replace(pattern = "(?:c.\\s)", "")
+colnames(names) <- c("PM", "Date")
+str_match(names[,2], pattern = '(?:–)((?:\\d){4})')[,2] ->death
+str_match(names[,2], pattern = 'born ((?:\\d){4})')[,2] -> birth1
+str_match(names[,2], pattern = '((?:\\d){4})–')[,2] -> birth2
+birth2[is.na(birth2)] <- birth1[is.na(birth2)]
+names$birth <- birth2
+names$death <- death
+names$Start <- df2clean$Start
+names$End <- df2clean$End
+
+names[-c(75,81), -2] ->filteredNames
+filteredNames
+
+plot(filteredNames$birth, rep(1, 85), pch = "*")
+lines(filteredNames$birth, rep(1, 85))
+filteredNames
+
 
