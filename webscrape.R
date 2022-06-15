@@ -76,4 +76,56 @@ plot(filteredNames$birth, rep(1, 85), pch = "*")
 lines(filteredNames$birth, rep(1, 85))
 filteredNames
 
+library(dplyr)
+library(lubridate)
+
+dateCalc <- function(x){
+  a <- str_count(x, " ")
+  if ( !str_detect(x, "(?:\\d){4}")){
+    NA
+    }
+  else if (a == 0){
+    parse_date_time(x, "%Y")
+  }else if (a==1){
+    parse_date_time(x, "%B%Y")
+  }else{
+    dmy(x)
+  }
+}
+
+tf<-function(x){
+  a <- str_count(x, " ")
+  if (is.na(x)){
+    NA
+  }else if ( !str_detect(x, "(?:\\d){4}")){
+    NA
+  }
+  else if (a == 0){
+    "%Y"
+  }else if (a==1){
+    "%B%Y"
+  }else{
+    "%d%B%Y"
+  }
+}
+
+formatter <- function(x){
+  unname(sapply(x, tf))
+}
+orders <- c("%Y", "%B%Y", "%d%B%Y")
+
+dateCalc2 <- function(x){
+  parse_date_time(x, select_formats = formatter(x), orders = orders)
+}
+
+filteredNames <- filteredNames%>%
+  mutate(End0 = End, End = str_replace(End0, pattern = "\\([^()]*\\)",""))%>%
+  mutate(BirthDate = dateCalc2(birth))%>%
+  mutate(DeathDate = dateCalc2(death))%>%
+  mutate(StartDate = dateCalc2(Start))%>%
+  mutate(EndDate = dateCalc2(End))
+
+library(ggplot2)
+filteredNames%>%ggplot(aes(DeathDate - BirthDate, EndDate - StartDate))+geom_line()
+filteredNames%>%ggplot(aes(DeathDate))+geom_histogram()
 
