@@ -55,4 +55,35 @@ for ( i in 1989:2000){
   dnunzip(i)
 }
 
-        
+##------------------------------------------
+library(readr)
+setwd("C:/Data")
+read_csv("huc8.csv") -> huc8
+View(filteredNames)
+View(df2clean)
+read_csv("huc8.csv") -> huc8
+View(huc8)
+colnames(huc8)
+make.names(colnames(huc8))
+make.names(colnames(huc8)) ->colnames(huc8)
+attach(huc8)
+
+library(readxl)
+excel_sheets("Monthly Water Demands by Subbasin.xlsx")
+read_excel("Monthly Water Demands by Subbasin.xlsx",2)-> may
+read_excel("Monthly Water Demands by Subbasin.xlsx",3)-> june
+read_excel("Monthly Water Demands by Subbasin.xlsx",4)-> july
+read_excel("Monthly Water Demands by Subbasin.xlsx",5)-> aug
+read_excel("Monthly Water Demands by Subbasin.xlsx",6)-> sep
+library(dplyr)
+may%>%mutate(month = "may") ->may
+june%>%mutate(month = "june") ->june
+july%>%mutate(month = "july") ->july
+aug%>%mutate(month = "aug") ->aug
+sep%>%mutate(month = "sep") ->sep
+make.names(colnames(may)) ->colnames(may)
+make.names(colnames(june)) ->colnames(june)
+mutate(may, Public.Supply.SW.Withdrawal = as.numeric(Public.Supply.SW.Withdrawal))->may
+mutate(sep, `Industrial/ining GW Withdrawal` = as.numeric(`Industrial/ining GW Withdrawal`)) ->sep
+bind_rows(may,june)%>%bind_rows(july)%>%bind_rows(aug)%>%bind_rows(sep)->allm
+
