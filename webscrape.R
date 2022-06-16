@@ -74,7 +74,6 @@ filteredNames
 
 plot(filteredNames$birth, rep(1, 85), pch = "*")
 lines(filteredNames$birth, rep(1, 85))
-filteredNames
 
 library(dplyr)
 library(lubridate)
@@ -125,7 +124,15 @@ filteredNames <- filteredNames%>%
   mutate(StartDate = dateCalc2(Start))%>%
   mutate(EndDate = dateCalc2(End))
 
-library(ggplot2)
-filteredNames%>%ggplot(aes(DeathDate - BirthDate, EndDate - StartDate))+geom_line()
-filteredNames%>%ggplot(aes(DeathDate))+geom_histogram()
+library(timevis)
+
+forVis <- filteredNames%>%transmute(content = PM, start = StartDate, end = EndDate)
+forVis%>%timevis()
+library(lares)
+kn <- 40
+plot_timeline(event = seq(1,kn), 
+              start = forVis$start[1:kn], 
+              end = forVis$end[1:kn], 
+              label = forVis$content[1:kn], 
+              )
 
