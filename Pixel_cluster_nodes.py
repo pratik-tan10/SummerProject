@@ -47,3 +47,18 @@ class Node():
         for each in range(len(neighborhood_info)):
             neighborhood_map[each] = nodes[each].get_immediate_neighbor(neighborhood_info)
         return neighborhood_map
+    
+df = pd.DataFrame({"first":[1,1,1,1,1], "second": [1,1,2,1,1], "third": [1,1,2,2,1], "fourth":[1,2,1,1,2], "fifth": [1,1,2,1,2]})
+df
+
+nodes_dict = Node.from_df(df)
+nodes_dict
+
+mat = Node.compute_similarity_matrix(nodes_dict)
+
+Node.invalidate(mat, 0.3)
+
+neighborhood = np.array([[1,1,1,1,0],[1,1,0,1,1],[1,0,1,1,0],[1,1,1,1,1],[0,1,0,1,1]])
+neighborhood
+
+Node.get_neighborhood_map(nodes_dict, neighborhood)
